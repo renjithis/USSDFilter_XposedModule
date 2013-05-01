@@ -39,24 +39,23 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		    			
 		    			Context context=(Context) param.args[1];
 		    			Object mmiCode=param.args[2];
-//		    			XposedBridge.log("mmicode type = "+mmiCode.toString());
+		    			Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage");
 		    			
+		    			// get this from user. need to change hardcoding
 		    			String filterString="free GPRS";
 		    			
-		    			Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage", (Class<?>)null);
-		    			String text = (String) getMessageMethod.invoke(mmiCode, (Class<?>)null);
+		    			String text = (String) getMessageMethod.invoke(mmiCode);
 		    			XposedBridge.log("text="+text);
+
 		    			if(text.contains(filterString))
 		    			{
+		    				// need to add more functionality, like logging, etc
+		    				
 		    				XposedBridge.log("Text contains filterString");
 			    			Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+			    			// This prevents the actual hooked method from being called
 			    			param.setResult(mmiCode);
 		    			}
-		    		}
-		    		@Override
-		    		protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-		    			// this will be called after the clock was updated by the original method
-		    			XposedBridge.log("afterHookedMethod displayMMIComplete");
 		    		}
 			});
     }
