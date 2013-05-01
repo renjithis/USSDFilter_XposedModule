@@ -43,8 +43,8 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		    			
 		    			String filterString="free GPRS";
 		    			
-		    			Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage", null);
-		    			String text = (String) getMessageMethod.invoke(mmiCode, null);
+		    			Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage", (Class<?>)null);
+		    			String text = (String) getMessageMethod.invoke(mmiCode, (Class<?>)null);
 		    			XposedBridge.log("text="+text);
 		    			if(text.contains(filterString))
 		    			{
