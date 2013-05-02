@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+import android.app.Notification;
+import android.app.NotificationManager;
 
 // Imports for XposedBridge
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -72,6 +75,9 @@ public class USSDFilter implements IXposedHookLoadPackage {
 
 					myLog("Text contains filterString");
 					Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
+					showNotification(context, "USSD Message Received", mmiText);
+					
+					
 					// This prevents the actual hooked method from being called
 					param.setResult(mmiCode);
 				}
@@ -79,7 +85,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		});
 	}
 	
-	public String readFile(String fileName)
+	private String readFile(String fileName)
 	{
 		// check if external storage (sdcard/user accessible internal storage) is avaiable
 		boolean mExternalStorageAvailable = false;
@@ -126,5 +132,34 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		}
 		return content;
 	}
+	
+	
+	private void showNotification(Context context, String title, String contentText) {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(title)
+		        .setContentText(contentText);
+		mBuilder.setAutoCancel(true);
+		
 
+		NotificationManager mNotificationManager =
+		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(0, mBuilder.build());
+		
+		
+		// Alternate implementation
+		
+//		// Build notification
+//		Notification notification = new Notification.Builder(context)
+//		        .setContentTitle("New mail from " + "test@gmail.com")
+//		        .setContentText("Subject")
+//		        .setSmallIcon(R.drawable.icon);
+//		
+//		// Hide the notification after its selected
+//		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+//		        
+//		mNotificationManager.notify(0, notification); 
+	}
+	 
 }
