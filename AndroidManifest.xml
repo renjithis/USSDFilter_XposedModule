@@ -14,6 +14,7 @@
         android:theme="@style/AppTheme" >
         <meta-data android:name="xposedmodule" android:value="true"/>
         <meta-data android:name="xposedminversion" android:value="2.1*"/>
+        <meta-data android:value="Filter out popups shown for call/sms/data usage/balance. Create file with name USSDFilterString.conf in the root of external (if availalbe) or /sdcard of internal storage" android:name="xposeddescription"/>
     </application>
 
 </manifest>
