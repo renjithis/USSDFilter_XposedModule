@@ -20,13 +20,19 @@ import android.content.Context;
 
 public class USSDFilter implements IXposedHookLoadPackage {
 
+	private String TAG="USSDFilter";
+	
+	private void myLog(String logString) {
+		XposedBridge.log(TAG + " :" + logString);
+	}
+	
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
 		//        XposedBridge.log("Loaded app: " + lpparam.packageName);
 
 		if(!lpparam.packageName.equals("com.android.phone"))
 			return;
 
-		XposedBridge.log("Found phone app");
+		myLog("Found phone app");
 
 		findAndHookMethod("com.android.phone.PhoneUtils", 
 				lpparam.classLoader, 
@@ -40,57 +46,32 @@ public class USSDFilter implements IXposedHookLoadPackage {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				// this will be called before the clock was updated by the original method
-				XposedBridge.log("beforeHookedMethod displayMMIComplete");
+				myLog("beforeHookedMethod displayMMIComplete");
 
 				Context context=(Context) param.args[1];
 				Object mmiCode=param.args[2];
 				Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage");
 
-				// get this from user. need to change hardcoding
-				
-				// check if external storage (sdcard/user accessible internal storage) is avaiable
-				boolean mExternalStorageAvailable = false;
-				boolean mExternalStorageReadable = false;
-				boolean mExternalStorageWriteable = false;
-				String state = Environment.getExternalStorageState();
+				// get this from user. need to change file based method to user preference
 
-				if (Environment.MEDIA_MOUNTED.equals(state)) {
-					// We can read and write the media
-					mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
-				} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-					// We can only read the media
-					mExternalStorageAvailable = true;
-					mExternalStorageReadable = true;
-					mExternalStorageWriteable = false;
-				} else {
-					// Something else is wrong. It may be one of many other states, but all we need
-					//  to know is we can neither read nor write
-					mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
-				}
-
-				if(!mExternalStorageReadable)
+				String filterString = readFile("USSDFilterString.conf"); // need to remove trailing newline if exists
+				if(filterString == null)
 				{
-					XposedBridge.log("External strorage not readable");
+					myLog("filterString is null");
 					return;
 				}
-				File filterStringFile = new File(Environment.getExternalStorageDirectory(), "USSDFilterString.conf");
-				if(!filterStringFile.exists() || !filterStringFile.canRead())
-				{
-					XposedBridge.log("Unable to read file:" + filterStringFile.getPath());
-					return;
-				}
-
-				String filterString= readFile(filterStringFile); // need to remove trailing newline if exists
-				XposedBridge.log("filterString="+filterString);
-				String text = (String) getMessageMethod.invoke(mmiCode);
-				XposedBridge.log("text="+text);
+				filterString = filterString.trim();
+				myLog("filterString="+filterString);
 				
-				if(text.contains(filterString))
+				String mmiText = (String) getMessageMethod.invoke(mmiCode);
+				myLog("mmiText="+mmiText);
+				
+				if(mmiText.contains(filterString) || mmiText == "")
 				{
 					// need to add more functionality, like logging, etc
 
-					XposedBridge.log("Text contains filterString");
-					Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+					myLog("Text contains filterString");
+					Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
 					// This prevents the actual hooked method from being called
 					param.setResult(mmiCode);
 				}
@@ -98,13 +79,45 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		});
 	}
 	
-	public String readFile(File file)
+	public String readFile(String fileName)
 	{
+		// check if external storage (sdcard/user accessible internal storage) is avaiable
+		boolean mExternalStorageAvailable = false;
+		boolean mExternalStorageReadable = false;
+		boolean mExternalStorageWriteable = false;
+		String state = Environment.getExternalStorageState();
+
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			// We can read and write the media
+			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
+		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			// We can only read the media
+			mExternalStorageAvailable = true;
+			mExternalStorageReadable = true;
+			mExternalStorageWriteable = false;
+		} else {
+			// Something else is wrong. It may be one of many other states, but all we need
+			//  to know is we can neither read nor write
+			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
+		}
+
+		if(!mExternalStorageReadable)
+		{
+			myLog("External strorage not readable");
+			return null;
+		}
+		
+		File textFile = new File(Environment.getExternalStorageDirectory(), fileName);
+		if(!textFile.exists() || !textFile.canRead())
+		{
+			myLog("Unable to read file:" + textFile.getPath());
+			return null;
+		}
 		String content = null;
 		//			File file = new File(file); //for ex foo.txt
 		try {
-			FileReader reader = new FileReader(file);
-			char[] chars = new char[(int) file.length()];
+			FileReader reader = new FileReader(textFile);
+			char[] chars = new char[(int) textFile.length()];
 			reader.read(chars);
 			content = new String(chars);
 			reader.close();
