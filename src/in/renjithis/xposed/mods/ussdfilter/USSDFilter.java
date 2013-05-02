@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+import android.app.Notification;
+import android.app.NotificationManager;
 
 // Imports for XposedBridge
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -79,7 +82,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		});
 	}
 	
-	public String readFile(String fileName)
+	private String readFile(String fileName)
 	{
 		// check if external storage (sdcard/user accessible internal storage) is avaiable
 		boolean mExternalStorageAvailable = false;
@@ -126,5 +129,18 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		}
 		return content;
 	}
+	
+	/*
+	private void showNotification(String title, String contentText) {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(null)
+		        .setSmallIcon(R.drawable.icon)
+		        .setContentTitle(title)
+		        .setContentText(contentText);
 
+		NotificationManager mNotificationManager =
+		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(0, mBuilder.build());
+	}
+	 */
 }
