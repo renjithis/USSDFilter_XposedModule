@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
@@ -26,7 +27,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 	private String TAG="USSDFilter";
 	
 	private void myLog(String logString) {
-		XposedBridge.log(TAG + " :" + logString);
+		XposedBridge.log(TAG + ": " + logString);
 	}
 	
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
@@ -51,42 +52,82 @@ public class USSDFilter implements IXposedHookLoadPackage {
 				// this will be called before the clock was updated by the original method
 				myLog("beforeHookedMethod displayMMIComplete");
 
-				Context context=(Context) param.args[1];
-				Object mmiCode=param.args[2];
-				Method getMessageMethod=mmiCode.getClass().getDeclaredMethod("getMessage");
+				Context context = (Context) param.args[1];
+				Object mmiCode = param.args[2];
+				Method getMessageMethod = mmiCode.getClass().getDeclaredMethod("getMessage");
 
 				// get this from user. need to change file based method to user preference
-
-				String filterString = readFile("USSDFilterString.conf"); // need to remove trailing newline if exists
-				if(filterString == null)
-				{
-					myLog("filterString is null");
-					return;
-				}
-				filterString = filterString.trim();
-				myLog("filterString="+filterString);
 				
-				String mmiText = (String) getMessageMethod.invoke(mmiCode);
-				myLog("mmiText="+mmiText);
+				ArrayList<Filter> filterSettings = filterSettings();
 				
-				if(mmiText.contains(filterString) || mmiText == "")
-				{
-					// need to add more functionality, like logging, etc
+				for (Filter filter : filterSettings) {
+					if(!filter.enabled || filter.subStringRegEx == null) {
+						myLog("Filter is not enabled. Filer name : " + filter.name);
+						continue;
+					}
 
-					myLog("Text contains filterString");
-					Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
-					showNotification(context, "USSD Message Received", mmiText);
+//					String filterString = readFile("USSDFilterString.conf"); // need to remove trailing newline if exists
+//					if(filterString == null)
+//					{
+//						myLog("filterString is null");
+//						return;
+//					}
+//					filterString = filterString.trim();
+//					myLog("filterString="+filterString);
+
+					String mmiText = (String) getMessageMethod.invoke(mmiCode);
+					myLog("mmiText="+mmiText);
 					
+					Boolean filterMatch = Boolean.FALSE;
 					
-					// This prevents the actual hooked method from being called
-					param.setResult(mmiCode);
+					if(filter.type == FilterType.TYPE_ALL)
+						filterMatch = Boolean.TRUE;
+					else if(filter.type == FilterType.TYPE_SUBSTRING) {
+						if(mmiText.contains(filter.subStringRegEx))
+							filterMatch = Boolean.TRUE;
+					}
+					else if(filter.type == FilterType.TYPE_REGEX) {
+						myLog("RegEx matching not yet implemented");
+					}
+
+					if(filterMatch)	{
+						// need to add more functionality, like logging, etc
+
+						myLog("Text contains filterString");
+						if(filter.outputType == OutputType.TYPE_TOAST)
+							Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
+						else if(filter.outputType == OutputType.TYPE_NOTIFICATION)
+							showNotification(context, "USSD Message Received", mmiText);
+
+						// This prevents the actual hooked method from being called
+						param.setResult(mmiCode);
+					}
 				}
 			}
 		});
 	}
 	
-	private String readFile(String fileName)
-	{
+	private ArrayList<Filter> filterSettings() {
+		ArrayList<Filter> filterList = new ArrayList<Filter>();
+		
+		// dummy data - replace with DB calls **************************
+		Filter filter = new Filter();
+		filter.name = "Filter1";
+		filter.type= FilterType.TYPE_SUBSTRING;
+		filter.subStringRegEx = readFile("USSDFilterString.conf");
+		filter.outputType = OutputType.TYPE_TOAST;
+		filter.priority = 1;
+		filter.enabled = Boolean.TRUE;
+		
+		filterList.add(filter);
+		
+		//**************************************************************
+		
+		
+		return filterList;
+	}
+	
+	private String readFile(String fileName) {
 		// check if external storage (sdcard/user accessible internal storage) is avaiable
 		boolean mExternalStorageAvailable = false;
 		boolean mExternalStorageReadable = false;
@@ -144,7 +185,6 @@ public class USSDFilter implements IXposedHookLoadPackage {
 
 		NotificationManager mNotificationManager =
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
 		mNotificationManager.notify(0, mBuilder.build());
 		
 		
