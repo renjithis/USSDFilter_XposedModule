@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+ 
+    <PreferenceCategory android:title="@string/pref_heading_filters" >
+        <EditTextPreference
+            android:dialogMessage="Enter filter string"
+            android:dialogTitle="Filter String"
+            android:inputType="textNoSuggestions"
+            android:key="pref_filterString"
+            android:title="FilterString" />
+
+    </PreferenceCategory>
+     
+    <PreferenceCategory android:title="@string/pref_heading_other" >
+        <PreferenceScreen
+            android:key="pref_donate"
+            android:title="@string/pref_donate"
+            android:summary="Donate us some money">
+        </PreferenceScreen>
+        
+            <!-- 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSendReport"
+            android:summary="@string/pref_send_report_summary"
+            android:title="@string/pref_send_report" >
+        </CheckBoxPreference>
+         -->
+        <PreferenceScreen android:key="pref_about" android:title="@string/pref_about"></PreferenceScreen>
+
+        
+        
+    </PreferenceCategory>
+ 
+</PreferenceScreen>
