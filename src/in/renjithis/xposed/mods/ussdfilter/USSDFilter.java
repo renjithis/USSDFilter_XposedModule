@@ -49,15 +49,13 @@ public class USSDFilter implements IXposedHookLoadPackage {
 				new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-				// this will be called before the clock was updated by the original method
+				// this will be called before the USSD message is displayed by the original method
 				myLog("beforeHookedMethod displayMMIComplete");
 
 				Context context = (Context) param.args[1];
 				Object mmiCode = param.args[2];
 				Method getMessageMethod = mmiCode.getClass().getDeclaredMethod("getMessage");
-
-				// get this from user. need to change file based method to user preference
-				
+		
 				ArrayList<Filter> filterSettings = filterSettings();
 				
 				for (Filter filter : filterSettings) {

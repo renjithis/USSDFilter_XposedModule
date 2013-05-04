@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/pref_actionbar_add"/>
+<!--              android:icon="@drawable/ic_action_search"
+     -->
+    
+</menu> 
