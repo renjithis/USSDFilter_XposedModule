@@ -37,7 +37,7 @@ public class PreferencesActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add:
-			Toast.makeText(this, "Menu Add selected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Add selected. not yet implemented", Toast.LENGTH_SHORT).show();
 			
 //			  Intent intent = new Intent(this, AddFilterActivity.class);
 //			  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -78,9 +78,13 @@ public class PreferencesActivity extends Activity {
 
 //    		// this is important because although the handler classes that read these settings
 //    		// are in the same package, they are executed in the context of the hooked package
-    		getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+//    		getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
     		addPreferencesFromResource(R.xml.preferences);
 
+    		String currentFilterString = readFile("USSDFilterString.conf");
+			EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
+			pref.setSummary(currentFilterString);
+    		
     		SharedPreferences sharedPref = getPreferenceScreen().getSharedPreferences();
     		sharedPref.registerOnSharedPreferenceChangeListener(this);
     		
@@ -88,21 +92,17 @@ public class PreferencesActivity extends Activity {
     	}
 
 
-    	// not working . SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length
     	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-    		myLog(key);
     		if (key.equals("pref_filterString")) {
     			EditTextPreference pref = (EditTextPreference) findPreference(key);
     			String value = sharedPreferences.getString(key, "");
-    			myLog(pref.getText());
+    			myLog("getText="+pref.getText());
+
     			if (value.isEmpty()) {
     				value = "(unchanged)";
     				return;
-    			}
-    			
-    			myLog(value);
-    		
+    			}    		
     			
     			writeFile("USSDFilterString.conf", value);
     			
@@ -110,6 +110,53 @@ public class PreferencesActivity extends Activity {
     		}
     	}
     
+    	private String readFile(String fileName) {
+    		// check if external storage (sdcard/user accessible internal storage) is avaiable
+    		boolean mExternalStorageAvailable = false;
+    		boolean mExternalStorageReadable = false;
+    		boolean mExternalStorageWriteable = false;
+    		String state = Environment.getExternalStorageState();
+
+    		if (Environment.MEDIA_MOUNTED.equals(state)) {
+    			// We can read and write the media
+    			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
+    		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+    			// We can only read the media
+    			mExternalStorageAvailable = true;
+    			mExternalStorageReadable = true;
+    			mExternalStorageWriteable = false;
+    		} else {
+    			// Something else is wrong. It may be one of many other states, but all we need
+    			//  to know is we can neither read nor write
+    			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
+    		}
+
+    		if(!mExternalStorageReadable)
+    		{
+    			myLog("External strorage not readable");
+    			return null;
+    		}
+    		
+    		File textFile = new File(Environment.getExternalStorageDirectory(), fileName);
+    		if(!textFile.exists() || !textFile.canRead())
+    		{
+    			myLog("Unable to read file:" + textFile.getPath());
+    			return null;
+    		}
+    		String content = null;
+    		//			File file = new File(file); //for ex foo.txt
+    		try {
+    			FileReader reader = new FileReader(textFile);
+    			char[] chars = new char[(int) textFile.length()];
+    			reader.read(chars);
+    			content = new String(chars);
+    			reader.close();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		return content;
+    	}
+    	
     	private void writeFile(String fileName, String dataString) {
     		// check if external storage (sdcard/user accessible internal storage) is avaiable
     		boolean mExternalStorageAvailable = false;

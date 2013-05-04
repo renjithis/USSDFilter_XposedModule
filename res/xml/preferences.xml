@@ -3,8 +3,12 @@
  
     <PreferenceCategory android:title="@string/pref_heading_filters" >
         <EditTextPreference
-                android:title="FilterString"
-                android:key="pref_filterStrimg" android:dialogTitle="Filter String" android:dialogMessage="Enter filter string"/>
+            android:dialogMessage="Enter filter string"
+            android:dialogTitle="Filter String"
+            android:inputType="textNoSuggestions"
+            android:key="pref_filterString"
+            android:title="FilterString" />
+
     </PreferenceCategory>
      
     <PreferenceCategory android:title="@string/pref_heading_other" >
