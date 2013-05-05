@@ -118,6 +118,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 	
 	private String readFile(String fileName) {
 		// check if external storage (sdcard/user accessible internal storage) is avaiable
+		// need to switch to internal storage
 		boolean mExternalStorageAvailable = false;
 		boolean mExternalStorageReadable = false;
 		boolean mExternalStorageWriteable = false;
