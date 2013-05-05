@@ -64,15 +64,6 @@ public class USSDFilter implements IXposedHookLoadPackage {
 						continue;
 					}
 
-//					String filterString = readFile("USSDFilterString.conf"); // need to remove trailing newline if exists
-//					if(filterString == null)
-//					{
-//						myLog("filterString is null");
-//						return;
-//					}
-//					filterString = filterString.trim();
-//					myLog("filterString="+filterString);
-
 					String mmiText = (String) getMessageMethod.invoke(mmiCode);
 					myLog("mmiText="+mmiText);
 					

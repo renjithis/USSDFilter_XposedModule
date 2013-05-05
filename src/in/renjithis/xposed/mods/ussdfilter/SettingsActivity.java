@@ -15,7 +15,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.content.SharedPreferences;
 import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,7 +22,7 @@ import android.widget.Toast;
 import android.os.Bundle;
 import android.os.Environment;
 
-public class PreferencesActivity extends Activity {
+public class SettingsActivity extends Activity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,7 +38,7 @@ public class PreferencesActivity extends Activity {
 		case R.id.action_add:
 			Toast.makeText(this, "Add selected. not yet implemented", Toast.LENGTH_SHORT).show();
 			
-//			  Intent intent = new Intent(this, AddFilterActivity.class);
+//			  Intent intent = new Intent(this, FilterPropertiesActivity.class);
 //			  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //			  startActivity(intent);
 			
@@ -78,6 +77,7 @@ public class PreferencesActivity extends Activity {
 
 //    		// this is important because although the handler classes that read these settings
 //    		// are in the same package, they are executed in the context of the hooked package
+    		// renjith : im not using shared preference in hooked method
 //    		getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
     		addPreferencesFromResource(R.xml.preferences);
 
