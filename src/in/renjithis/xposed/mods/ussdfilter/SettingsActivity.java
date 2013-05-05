@@ -84,6 +84,7 @@ public class SettingsActivity extends Activity {
     		String currentFilterString = readFile("USSDFilterString.conf");
 			EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
 			pref.setSummary(currentFilterString);
+			pref.setText(currentFilterString);
     		
     		SharedPreferences sharedPref = getPreferenceScreen().getSharedPreferences();
     		sharedPref.registerOnSharedPreferenceChangeListener(this);
