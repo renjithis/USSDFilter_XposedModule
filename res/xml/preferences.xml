@@ -2,13 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
  
     <PreferenceCategory android:title="@string/pref_heading_filters" >
+        <!-- 
         <EditTextPreference
             android:dialogMessage="Enter filter string"
             android:dialogTitle="Filter String"
             android:inputType="textNoSuggestions"
             android:key="pref_filterString"
             android:title="FilterString" />
-
+ 		-->
+ 			
     </PreferenceCategory>
      
     <PreferenceCategory android:title="@string/pref_heading_other" >
