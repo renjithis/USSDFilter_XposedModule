@@ -23,3 +23,6 @@ TODO
   3.3 Show as notification<br />
 4. Donate (consumables for $1, $2 & $5)<br />
 5. About<br />
+6. Database to store settings and log<br />
+7. Log USSD messages<br />
+  7.1 Configurable log limit<br />
