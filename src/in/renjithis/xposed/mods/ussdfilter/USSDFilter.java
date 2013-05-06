@@ -55,7 +55,14 @@ public class USSDFilter implements IXposedHookLoadPackage {
 				Context context = (Context) param.args[1];
 				Object mmiCode = param.args[2];
 				Method getMessageMethod = mmiCode.getClass().getDeclaredMethod("getMessage");
+				Method isUssdRequestMethod = mmiCode.getClass().getDeclaredMethod("isUssdRequest");
 		
+				if((Boolean)isUssdRequestMethod.invoke(mmiCode))
+				{
+					myLog("USSD Request detected. Not filtering");
+					return;
+				}
+					
 				ArrayList<Filter> filterSettings = filterSettings();
 				
 				for (Filter filter : filterSettings) {
