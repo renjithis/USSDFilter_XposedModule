@@ -10,16 +10,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
   public static final String TABLE_FILTERS = "preferences";
   public static final String COLUMN_ID = "_id";
   
-  /*
-   * 
-   		filter.name = "Filter1";
-		filter.type= FilterType.TYPE_SUBSTRING;
-		filter.subStringRegEx = readFile("USSDFilterString.conf");
-		filter.outputType = OutputType.TYPE_TOAST;
-		filter.priority = 1;
-		filter.enabled = Boolean.TRUE;
-   * 
-   */
   public static final String COLUMN_FILTER_NAME = "filter_name";
   public static final String COLUMN_FILTER_TYPE = "filter_type";
   public static final String COLUMN_FILTER_STRING = "filter_string";
