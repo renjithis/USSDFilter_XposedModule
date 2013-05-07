@@ -1,0 +1,13 @@
+
+    <resources>
+        <string-array name="filterTypes">
+            <item >Filter All</item>
+            <item >Substring</item>
+            <item >Regular Expression</item>
+        </string-array>
+        <string-array name="filterOutputTypes">
+            <item >No output</item>
+            <item >Show Toast</item>
+            <item >Show Notification</item>
+        </string-array>
+    </resources>
