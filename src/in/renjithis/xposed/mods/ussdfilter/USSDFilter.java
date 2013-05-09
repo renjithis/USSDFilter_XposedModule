@@ -110,7 +110,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		Filter filter = new Filter();
 		filter.name = "Filter1";
 		filter.type= FilterType.TYPE_SUBSTRING;
-		filter.subStringRegEx = readFile("USSDFilterString.conf");
+		filter.subStringRegEx = FileManagement.readFileFromExternalStorage("USSDFilterString.conf");
 		filter.outputType = OutputType.TYPE_TOAST;
 		filter.priority = 1;
 		filter.enabled = Boolean.TRUE;
@@ -123,53 +123,53 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		return filterList;
 	}
 	
-	private String readFile(String fileName) {
-		// check if external storage (sdcard/user accessible internal storage) is avaiable
-		// need to switch to internal storage
-		boolean mExternalStorageAvailable = false;
-		boolean mExternalStorageReadable = false;
-		boolean mExternalStorageWriteable = false;
-		String state = Environment.getExternalStorageState();
-
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			// We can read and write the media
-			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
-		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			// We can only read the media
-			mExternalStorageAvailable = true;
-			mExternalStorageReadable = true;
-			mExternalStorageWriteable = false;
-		} else {
-			// Something else is wrong. It may be one of many other states, but all we need
-			//  to know is we can neither read nor write
-			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
-		}
-
-		if(!mExternalStorageReadable)
-		{
-			myLog("External strorage not readable");
-			return null;
-		}
-		
-		File textFile = new File(Environment.getExternalStorageDirectory(), fileName);
-		if(!textFile.exists() || !textFile.canRead())
-		{
-			myLog("Unable to read file:" + textFile.getPath());
-			return null;
-		}
-		String content = null;
-		//			File file = new File(file); //for ex foo.txt
-		try {
-			FileReader reader = new FileReader(textFile);
-			char[] chars = new char[(int) textFile.length()];
-			reader.read(chars);
-			content = new String(chars);
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return content;
-	}
+//	private String readFile(String fileName) {
+//		// check if external storage (sdcard/user accessible internal storage) is avaiable
+//		// need to switch to internal storage
+//		boolean mExternalStorageAvailable = false;
+//		boolean mExternalStorageReadable = false;
+//		boolean mExternalStorageWriteable = false;
+//		String state = Environment.getExternalStorageState();
+//
+//		if (Environment.MEDIA_MOUNTED.equals(state)) {
+//			// We can read and write the media
+//			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
+//		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+//			// We can only read the media
+//			mExternalStorageAvailable = true;
+//			mExternalStorageReadable = true;
+//			mExternalStorageWriteable = false;
+//		} else {
+//			// Something else is wrong. It may be one of many other states, but all we need
+//			//  to know is we can neither read nor write
+//			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
+//		}
+//
+//		if(!mExternalStorageReadable)
+//		{
+//			myLog("External strorage not readable");
+//			return null;
+//		}
+//		
+//		File textFile = new File(Environment.getExternalStorageDirectory(), fileName);
+//		if(!textFile.exists() || !textFile.canRead())
+//		{
+//			myLog("Unable to read file:" + textFile.getPath());
+//			return null;
+//		}
+//		String content = null;
+//		//			File file = new File(file); //for ex foo.txt
+//		try {
+//			FileReader reader = new FileReader(textFile);
+//			char[] chars = new char[(int) textFile.length()];
+//			reader.read(chars);
+//			content = new String(chars);
+//			reader.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return content;
+//	}
 	
 	
 	private void showNotification(Context context, String title, String contentText) {
