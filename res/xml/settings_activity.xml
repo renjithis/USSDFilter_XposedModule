@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <fragment android:name="com.example.android.fragments.SettingsFragment"
+              android:id="@+id/headlines_fragment"
+              android:layout_weight="1"
+              android:layout_width="0dp"
+              android:layout_height="match_parent" />
+
+    <fragment android:name="com.example.android.fragments.FilterEditFragment"
+              android:id="@+id/article_fragment"
+              android:layout_weight="2"
+              android:layout_width="0dp"
+              android:layout_height="match_parent" />
+
+</LinearLayout>
+
+            <!-- 
+
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
  
     <PreferenceCategory android:title="@string/pref_heading_filters" >
-        <!-- 
         <EditTextPreference
             android:dialogMessage="Enter filter string"
             android:dialogTitle="Filter String"
             android:inputType="textNoSuggestions"
             android:key="pref_filterString"
             android:title="FilterString" />
- 		-->
  			
     </PreferenceCategory>
      
@@ -20,14 +40,12 @@
             android:summary="Donate us some money">
         </PreferenceScreen>
         
-            <!-- 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="prefSendReport"
             android:summary="@string/pref_send_report_summary"
             android:title="@string/pref_send_report" >
         </CheckBoxPreference>
-         -->
         <PreferenceScreen android:key="pref_about" android:title="@string/pref_about"></PreferenceScreen>
 
         
@@ -35,3 +53,4 @@
     </PreferenceCategory>
  
 </PreferenceScreen>
+         -->

@@ -6,6 +6,7 @@
     <string name="pref_actionbar_add">Add</string>
     <string name="pref_heading_filters">Filters</string>
     <string name="pref_heading_other">Other</string>
+    <string name="pref_log">Log</string>
     <string name="pref_donate">Donate</string>
     <string name="pref_about">About</string>
     

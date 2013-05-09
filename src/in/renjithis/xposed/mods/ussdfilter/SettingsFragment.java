@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 public class SettingsFragment extends Fragment {
 
@@ -27,6 +28,10 @@ public class SettingsFragment extends Fragment {
 //  	        updateDetail();
 //  	      }
 //  	    });
+  	    
+  	// Find the ListView resource. 
+  	   ListView mainListView = (ListView) getActivity().findViewById( R.id.filterListView );
+  	    
   	    return view;
   	  }
 

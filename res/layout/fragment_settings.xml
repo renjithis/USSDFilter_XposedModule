@@ -1,28 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <!--
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Press to update"
          />
-    
-    <!-- 
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="72dp" >
-    </ListView>
+    -->
 
     <ListView
-        android:id="@+id/listView2"
+        android:id="@+id/filterListView"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1" >
-
+        android:layout_height="72dp"
+        >
+        <!-- android:layout_weight="1"--> 
     </ListView>
- -->
+
+    <TextView
+        android:id="@+id/logTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pref_log" />
+
+    <TextView
+        android:id="@+id/donateTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pref_donate" />
+
+    <TextView
+        android:id="@+id/aboutTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pref_about" />
+
 </LinearLayout>

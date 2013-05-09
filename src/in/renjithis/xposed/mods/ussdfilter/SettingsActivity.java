@@ -4,6 +4,7 @@ import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.support.v4.app.FragmentActivity;
 import android.content.SharedPreferences;
 import android.app.Activity;
 import android.app.Fragment;
@@ -50,18 +51,20 @@ public class SettingsActivity extends Activity {
 		return true;
 	} 
 	
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//    	super.onCreate(savedInstanceState);
-//
-//
-//    	
-//    	// Display the fragment as the main content.
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
+
+    	getActionBar().setDisplayHomeAsUpEnabled(true);
+    	
+    	setContentView(R.layout.fragment_settings);
+    	
+    	// Display the fragment as the main content.
 //    	if (savedInstanceState == null)
 //    		getFragmentManager().beginTransaction().replace(android.R.id.content,
 //    				new SettingsListFragment()).commit();
-//    }
-//    
+    }
+    
 
 	
 //
