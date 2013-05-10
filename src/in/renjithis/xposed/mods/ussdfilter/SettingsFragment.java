@@ -30,7 +30,7 @@ public class SettingsFragment extends Fragment {
 //  	    });
   	    
   	// Find the ListView resource. 
-  	   ListView mainListView = (ListView) getActivity().findViewById( R.id.filterListView );
+//  	   ListView mainListView = (ListView) getActivity().findViewById( R.id.filterListView );
   	    
   	    return view;
   	  }

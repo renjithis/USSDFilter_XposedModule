@@ -1,5 +1,8 @@
 package in.renjithis.xposed.mods.ussdfilter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference;
@@ -14,11 +17,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.os.Bundle;
 import android.os.Environment;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivityOld extends Activity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,35 +56,60 @@ public class SettingsActivity extends Activity {
 		return true;
 	} 
 	
-<<<<<<< HEAD
+	
+	
+	
+	/*
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
 
+    	// enable action bar home button
     	getActionBar().setDisplayHomeAsUpEnabled(true);
     	
-    	setContentView(R.layout.fragment_settings);
+    	setContentView(R.layout.settings_activity);
     	
     	// Display the fragment as the main content.
 //    	if (savedInstanceState == null)
 //    		getFragmentManager().beginTransaction().replace(android.R.id.content,
 //    				new SettingsListFragment()).commit();
+    	
+    	// Find the ListView resource. 
+//        ListView filterListView = (ListView) findViewById( R.id.filterListView );
+//        filterListView.setItemsCanFocus(true);
+//
+//        // Create and populate a List of planet names.
+//        String[] filterListStrings = new String[] { "Dummy" };  
+//        ArrayList<String> filterList = new ArrayList<String>();
+//        filterList.addAll(Arrays.asList(filterListStrings));
+//        
+//        ArrayAdapter<String> filterListAdapter = new ArrayAdapter<String>(this, R.layout.simple_row, filterList);
+//        filterListAdapter.add("Dummy filter");
+//        filterListView.setAdapter( filterListAdapter );   
+//
+//        ListView othersListView = (ListView) findViewById( R.id.othersListView );
+//
+//        String[] othersListStrings = new String[] { "Log", "Donate", "About" };  
+//        ArrayList<String> othersList = new ArrayList<String>();
+//        othersList.addAll( Arrays.asList(othersListStrings) );
+//        
+//        // Create ArrayAdapter using the planet list.
+//        ArrayAdapter<String> othersListAdapter = new ArrayAdapter<String>(this, R.layout.simple_row, othersList);
+//        
+//        // Add more planets. If you passed a String[] instead of a List<String> 
+//        // into the ArrayAdapter constructor, you must not add more items. 
+//        // Otherwise an exception will occur.
+////        listAdapter.add( "Ceres" );
+////        listAdapter.add( "Pluto" );
+////        listAdapter.add( "Haumea" );
+////        listAdapter.add( "Makemake" );
+////        listAdapter.add( "Eris" );
+//        
+//        // Set the ArrayAdapter as the ListView's adapter.
+//        othersListView.setAdapter( othersListAdapter );   
     }
     
-=======
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//    	super.onCreate(savedInstanceState);
-//
-//
-//    	
-//    	// Display the fragment as the main content.
-//    	if (savedInstanceState == null)
-//    		getFragmentManager().beginTransaction().replace(android.R.id.content,
-//    				new SettingsListFragment()).commit();
-//    }
-//    
->>>>>>> 8714577545ac9354c3d032807e814db412417f36
 
 	
 //
@@ -124,4 +154,6 @@ public class SettingsActivity extends Activity {
 //    		
 //    	}
 //    }
+ * 
+ */
 }

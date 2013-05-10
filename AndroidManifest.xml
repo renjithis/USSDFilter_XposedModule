@@ -19,13 +19,21 @@
         <meta-data android:value="Filter out popups shown for call/sms/data usage/balance" android:name="xposeddescription"/>
         <activity 
             android:label="@string/app_name" 
-            android:name="SettingsActivity" 
+            android:name="in.renjithis.xposed.mods.ussdfilter.SettingsActivity" 
             android:icon="@drawable/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="in.renjithis.xposed.mods.ussdfilter.FilterDetailActivity"
+            android:label="@string/title_filter_detail"
+            android:parentActivityName=".FilterListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FilterListActivity" />
         </activity>
     </application>
 
