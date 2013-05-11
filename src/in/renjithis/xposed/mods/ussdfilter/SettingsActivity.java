@@ -69,6 +69,9 @@ public class SettingsActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_filter_list);
 
+		// enable action bar home button
+    	getActionBar().setDisplayHomeAsUpEnabled(true);
+    	
 		if (findViewById(R.id.filter_detail_container) != null) {
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and

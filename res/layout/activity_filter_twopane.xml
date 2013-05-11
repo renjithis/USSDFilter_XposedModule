@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/filter_list"
-        android:name="com.example.settingsexample.FilterListFragment"
+        android:name="in.renjithis.xposed.mods.ussdfilter.FilterListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
