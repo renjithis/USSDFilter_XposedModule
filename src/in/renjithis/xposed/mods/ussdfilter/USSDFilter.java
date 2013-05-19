@@ -83,21 +83,42 @@ public class USSDFilter implements IXposedHookLoadPackage {
 							filterMatch = Boolean.TRUE;
 					}
 					else if(filter.type == FilterType.TYPE_REGEX) {
-						myLog("RegEx matching not yet implemented");
+//						myLog("RegEx matching not yet implemented");
+                        if(mmiText.matches(filter.subStringRegEx))
+                            filterMatch = Boolean.TRUE;
 					}
 
-					if(filterMatch)	{
+                    String logString="";
+
+                    if(filterMatch)
+                    {
 						// need to add more functionality, like logging, etc
 
 						myLog("Text contains filterString");
 						if(filter.outputType == OutputType.TYPE_TOAST)
+                        {
 							Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
+                            logString.concat("[Toast] ");
+                        }
 						else if(filter.outputType == OutputType.TYPE_NOTIFICATION)
+                        {
 							showNotification(context, "USSD Message Received", mmiText);
-
+                            logString.concat("[Notification] ");
+                        }
+                        else
+                        {
+                            logString.concat("[Silent] ");
+                        }
+                        logString.concat(mmiText);
 						// This prevents the actual hooked method from being called
 						param.setResult(mmiCode);
 					}
+                    else
+                    {
+                        logString.concat("[Allowed] " + mmiText);
+                    }
+
+                    FileManagement.writeFileToExternalStorage("USSDFilter.log", logString, Boolean.TRUE);
 				}
 			}
 		});
