@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -88,7 +89,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
                             filterMatch = Boolean.TRUE;
 					}
 
-                    String logString="";
+                    String logString="\n";
 
                     if(filterMatch)
                     {
@@ -98,26 +99,27 @@ public class USSDFilter implements IXposedHookLoadPackage {
 						if(filter.outputType == OutputType.TYPE_TOAST)
                         {
 							Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
-                            logString.concat("[Toast] ");
+                            logString += "[Toast] ";
                         }
 						else if(filter.outputType == OutputType.TYPE_NOTIFICATION)
                         {
 							showNotification(context, "USSD Message Received", mmiText);
-                            logString.concat("[Notification] ");
+                            logString += "[Notification] ";
                         }
                         else
                         {
-                            logString.concat("[Silent] ");
+                            logString += "[Silent] ";
                         }
-                        logString.concat(mmiText);
+                        logString += mmiText;
 						// This prevents the actual hooked method from being called
 						param.setResult(mmiCode);
 					}
                     else
                     {
-                        logString.concat("[Allowed] " + mmiText);
+                        logString += "[Allowed] " + mmiText;
                     }
 
+                    myLog("Writing to log. Text=" + logString);
                     FileManagement.writeFileToExternalStorage("USSDFilter.log", logString, Boolean.TRUE);
 				}
 			}
@@ -132,7 +134,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		filter.name = "Filter1";
 		filter.type= FilterType.TYPE_SUBSTRING;
 		filter.subStringRegEx = FileManagement.readFileFromExternalStorage("USSDFilterString.conf");
-		filter.outputType = OutputType.TYPE_TOAST;
+		filter.outputType = OutputType.TYPE_NOTIFICATION;
 		filter.priority = 1;
 		filter.enabled = Boolean.TRUE;
 		
@@ -147,10 +149,13 @@ public class USSDFilter implements IXposedHookLoadPackage {
 	private void showNotification(Context context, String title, String contentText) {
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
 		        .setSmallIcon(R.drawable.ic_launcher)
+                .setLargeIcon(((BitmapDrawable)context.getResources().getDrawable(R.drawable.ic_launcher)).getBitmap())
 		        .setContentTitle(title)
-		        .setContentText(contentText);
-		mBuilder.setAutoCancel(true);
-		
+		        .setContentText(contentText)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
+                .setAutoCancel(true);
+//		mBuilder.setAutoCancel(true);
+
 
 		NotificationManager mNotificationManager =
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

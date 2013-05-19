@@ -14,7 +14,7 @@ public class FileManagement {
     private static final String TAG="USSDFilter.FileManagement :";
 
     public static String readFileFromExternalStorage(String fileName) {
-        // check if external storage (sdcard/user accessible internal storage) is avaiable
+        // check if external storage (sdcard/user accessible internal storage) is available
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageReadable = false;
         boolean mExternalStorageWriteable = false;
@@ -36,7 +36,7 @@ public class FileManagement {
 
         if(!mExternalStorageReadable)
         {
-            Log.e(TAG, "External strorage not readable");
+            Log.e(TAG, "External storage not readable");
             return null;
         }
 
@@ -65,7 +65,7 @@ public class FileManagement {
     }
 
     public static void writeFileToExternalStorage(String fileName, String dataString, Boolean append) {
-        // check if external storage (sdcard/user accessible internal storage) is avaiable
+        // check if external storage (sdcard/user accessible internal storage) is available
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageReadable = false;
         boolean mExternalStorageWriteable = false;
@@ -87,7 +87,7 @@ public class FileManagement {
 
         if(!mExternalStorageWriteable)
         {
-            Log.e(TAG, "External strorage not writable");
+            Log.e(TAG, "External storage not writable");
             return;
         }
 
@@ -95,16 +95,19 @@ public class FileManagement {
 
 
         try {
-            // if file doesnt exists, then create it
+            // if file doesn't exists, then create it
             if (!textFile.exists()) {
                 textFile.createNewFile();
             }
 
-            FileWriter fw = new FileWriter(textFile.getAbsoluteFile());
+            Log.i(TAG, "dataString="+dataString);
+
+            FileWriter fw = new FileWriter(textFile.getAbsoluteFile(), append);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(dataString);
             bw.close();
         } catch (IOException e) {
+            Log.e(TAG, "Error writing to file :" + e.toString());
             e.printStackTrace();
         }
     }
