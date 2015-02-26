@@ -164,10 +164,8 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		        .setContentText(contentText)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
                 .setAutoCancel(true);
-        myLog("Initialised notification builder");
 		NotificationManager mNotificationManager =
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        myLog("Initialised notification manager");
         Notification notification = nBuilder.build();
         myLog("Notification built");
         mNotificationManager.notify(0, notification);
