@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class USSDFilter implements IXposedHookLoadPackage {
 						continue;
 					}
 
+                    myLog("Filter ="+filter.name+" type="+filter.type+" subStringRegEx="+filter.subStringRegEx+" outputType="+filter.outputType);
 					String mmiText = (String) getMessageMethod.invoke(mmiCode);
 					myLog("mmiText="+mmiText);
 					
@@ -79,25 +81,56 @@ public class USSDFilter implements IXposedHookLoadPackage {
 					if(filter.type == FilterType.TYPE_ALL)
 						filterMatch = Boolean.TRUE;
 					else if(filter.type == FilterType.TYPE_SUBSTRING) {
-						if(mmiText.contains(filter.subStringRegEx))
-							filterMatch = Boolean.TRUE;
+						if(mmiText.contains(filter.subStringRegEx) || mmiText.contains(filter.subStringRegEx.subSequence(0, filter.subStringRegEx.length() - 1))) {
+                            filterMatch = Boolean.TRUE;
+                            myLog("Filter matched");
+                        }
+                        else
+                            myLog("Does not contain substring");
 					}
 					else if(filter.type == FilterType.TYPE_REGEX) {
-						myLog("RegEx matching not yet implemented");
+//						myLog("RegEx matching not yet implemented");
+                        if(mmiText.matches(filter.subStringRegEx))
+                            filterMatch = Boolean.TRUE;
 					}
+                    else
+                        myLog("Did not match filter");
 
-					if(filterMatch)	{
+                    String logString="\n";
+
+                    if(filterMatch)
+                    {
 						// need to add more functionality, like logging, etc
 
 						myLog("Text contains filterString");
 						if(filter.outputType == OutputType.TYPE_TOAST)
+                        {
+                            myLog("Showing Toast");
 							Toast.makeText(context, mmiText, Toast.LENGTH_LONG).show();
+                            logString += "[Toast] ";
+                        }
 						else if(filter.outputType == OutputType.TYPE_NOTIFICATION)
+                        {
+                            myLog("Showing Notification");
 							showNotification(context, "USSD Message Received", mmiText);
-
+                            logString += "[Notification] ";
+                        }
+                        else
+                        {
+                            myLog("Not showing anything (Silent)");
+                            logString += "[Silent] ";
+                        }
+                        logString += mmiText;
 						// This prevents the actual hooked method from being called
 						param.setResult(mmiCode);
 					}
+                    else
+                    {
+                        logString += "[Allowed] " + mmiText;
+                    }
+
+                    myLog("Writing to log. Text=" + logString);
+                    FileManagement.writeFileToExternalStorage("USSDFilter.log", logString, Boolean.TRUE);
 				}
 			}
 		});
@@ -110,8 +143,8 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		Filter filter = new Filter();
 		filter.name = "Filter1";
 		filter.type= FilterType.TYPE_SUBSTRING;
-		filter.subStringRegEx = readFile("USSDFilterString.conf");
-		filter.outputType = OutputType.TYPE_TOAST;
+		filter.subStringRegEx = FileManagement.readFileFromExternalStorage("USSDFilterString.conf");
+		filter.outputType = OutputType.TYPE_NOTIFICATION;
 		filter.priority = 1;
 		filter.enabled = Boolean.TRUE;
 		
@@ -122,81 +155,22 @@ public class USSDFilter implements IXposedHookLoadPackage {
 		
 		return filterList;
 	}
-	
-	private String readFile(String fileName) {
-		// check if external storage (sdcard/user accessible internal storage) is avaiable
-		// need to switch to internal storage
-		boolean mExternalStorageAvailable = false;
-		boolean mExternalStorageReadable = false;
-		boolean mExternalStorageWriteable = false;
-		String state = Environment.getExternalStorageState();
 
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			// We can read and write the media
-			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = true;
-		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			// We can only read the media
-			mExternalStorageAvailable = true;
-			mExternalStorageReadable = true;
-			mExternalStorageWriteable = false;
-		} else {
-			// Something else is wrong. It may be one of many other states, but all we need
-			//  to know is we can neither read nor write
-			mExternalStorageAvailable = mExternalStorageReadable = mExternalStorageWriteable = false;
-		}
-
-		if(!mExternalStorageReadable)
-		{
-			myLog("External strorage not readable");
-			return null;
-		}
-		
-		File textFile = new File(Environment.getExternalStorageDirectory(), fileName);
-		if(!textFile.exists() || !textFile.canRead())
-		{
-			myLog("Unable to read file:" + textFile.getPath());
-			return null;
-		}
-		String content = null;
-		//			File file = new File(file); //for ex foo.txt
-		try {
-			FileReader reader = new FileReader(textFile);
-			char[] chars = new char[(int) textFile.length()];
-			reader.read(chars);
-			content = new String(chars);
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return content;
-	}
-	
-	
 	private void showNotification(Context context, String title, String contentText) {
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+		NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(context)
 		        .setSmallIcon(R.drawable.ic_launcher)
+//                .setLargeIcon(((BitmapDrawable)context.getResources().getDrawable(R.drawable.ic_launcher)).getBitmap())
 		        .setContentTitle(title)
-		        .setContentText(contentText);
-		mBuilder.setAutoCancel(true);
-		
-
+		        .setContentText(contentText)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
+                .setAutoCancel(true);
+        myLog("Initialised notification builder");
 		NotificationManager mNotificationManager =
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(0, mBuilder.build());
-		
-		
-		// Alternate implementation
-		
-//		// Build notification
-//		Notification notification = new Notification.Builder(context)
-//		        .setContentTitle("New mail from " + "test@gmail.com")
-//		        .setContentText("Subject")
-//		        .setSmallIcon(R.drawable.icon);
-//		
-//		// Hide the notification after its selected
-//		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-//		        
-//		mNotificationManager.notify(0, notification); 
+        myLog("Initialised notification manager");
+        Notification notification = nBuilder.build();
+        myLog("Notification built");
+        mNotificationManager.notify(0, notification);
 	}
 	 
 }

@@ -81,11 +81,15 @@ public class SettingsActivity extends Activity {
 //    		getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
     		addPreferencesFromResource(R.xml.preferences);
 
-//    		String currentFilterString = readFile("USSDFilterString.conf");
-//			EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
-//			pref.setSummary(currentFilterString);
-//			pref.setText(currentFilterString);
-    		
+    		String currentFilterString = readFile("USSDFilterString.conf");
+            myLog("currentFilterString="+currentFilterString);
+            if(currentFilterString==null)
+                currentFilterString="";
+//            if(currentFilterString!=null) {
+                EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
+                pref.setSummary(currentFilterString);
+                pref.setText(currentFilterString);
+//            }
     		SharedPreferences sharedPref = getPreferenceScreen().getSharedPreferences();
     		sharedPref.registerOnSharedPreferenceChangeListener(this);
     		
