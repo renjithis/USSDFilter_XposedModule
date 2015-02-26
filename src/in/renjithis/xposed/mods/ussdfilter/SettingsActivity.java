@@ -82,10 +82,14 @@ public class SettingsActivity extends Activity {
     		addPreferencesFromResource(R.xml.preferences);
 
     		String currentFilterString = readFile("USSDFilterString.conf");
-			EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
-			pref.setSummary(currentFilterString);
-			pref.setText(currentFilterString);
-    		
+            myLog("currentFilterString="+currentFilterString);
+            if(currentFilterString==null)
+                currentFilterString="";
+//            if(currentFilterString!=null) {
+                EditTextPreference pref = (EditTextPreference) findPreference("pref_filterString");
+                pref.setSummary(currentFilterString);
+                pref.setText(currentFilterString);
+//            }
     		SharedPreferences sharedPref = getPreferenceScreen().getSharedPreferences();
     		sharedPref.registerOnSharedPreferenceChangeListener(this);
     		
@@ -95,20 +99,19 @@ public class SettingsActivity extends Activity {
 
     	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-    		if (key.equals("pref_filterString")) {
-    			EditTextPreference pref = (EditTextPreference) findPreference(key);
-    			String value = sharedPreferences.getString(key, "");
-    			myLog("getText="+pref.getText());
-
-    			if (value.isEmpty()) {
-    				value = "(unchanged)";
-    				return;
-    			}    		
-    			
-    			writeFile("USSDFilterString.conf", value);
-    			
-    			pref.setSummary(value);
-    		}
+//    		if (key.equals("pref_filterString")) {
+//    			EditTextPreference pref = (EditTextPreference) findPreference(key);
+//    			String value = sharedPreferences.getString(key, "");
+//    			if (value.isEmpty()) {
+//    				value = "(unchanged)";
+//    				return;
+//    			}    		
+//    			
+//    			writeFile("USSDFilterString.conf", value);
+//    			pref.setSummary(value);
+//    		}
+    		
+    		
     	}
     
     	private String readFile(String fileName) {

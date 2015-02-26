@@ -8,7 +8,7 @@
             android:inputType="textNoSuggestions"
             android:key="pref_filterString"
             android:title="FilterString" />
-
+ 			
     </PreferenceCategory>
      
     <PreferenceCategory android:title="@string/pref_heading_other" >
